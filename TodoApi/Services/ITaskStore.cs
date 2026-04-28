@@ -1,9 +1,10 @@
+using System.Collections.Concurrent;
 using TodoApi.Models;
 
 namespace TodoApi.Services
 {
     public interface ITaskStore
     {
-        List<TaskItem> Tasks { get; }
+        ConcurrentDictionary<int, TaskItem> Tasks { get; }
     }
 }

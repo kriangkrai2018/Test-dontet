@@ -1,3 +1,4 @@
+using System.Collections.Concurrent;
 using TodoApi.Dtos;
 using TodoApi.Mappings;
 using TodoApi.Models;
@@ -14,47 +15,43 @@ namespace TodoApi.Services
             _taskStore = taskStore;
         }
 
-        public async Task<IEnumerable<TaskReadDto>> GetAllAsync()
+        public Task<IEnumerable<TaskReadDto>> GetAllAsync()
         {
-            await Task.CompletedTask;
-            return _taskStore.Tasks.Select(task => task.ToReadDto());
+            var tasks = _taskStore.Tasks.Values.Select(task => task.ToReadDto()).AsEnumerable();
+            return Task.FromResult(tasks);
         }
 
-        public async Task<TaskReadDto?> GetByIdAsync(int id)
+        public Task<TaskReadDto?> GetByIdAsync(int id)
         {
-            await Task.CompletedTask;
-            var task = _taskStore.Tasks.FirstOrDefault(item => item.Id == id);
-            return task?.ToReadDto();
+            _taskStore.Tasks.TryGetValue(id, out var task);
+            var result = task?.ToReadDto();
+            return Task.FromResult(result);
         }
 
-        public async Task<TaskReadDto> AddAsync(TaskCreateDto createDto)
+        public Task<TaskReadDto> AddAsync(TaskCreateDto createDto)
         {
-            await Task.CompletedTask;
             var task = createDto.ToModel();
-            task.Id = _nextId++;
+            task.Id = Interlocked.Increment(ref _nextId);
             task.CreatedAt = DateTime.UtcNow;
-            _taskStore.Tasks.Add(task);
-            return task.ToReadDto();
+            _taskStore.Tasks.TryAdd(task.Id, task);
+            return Task.FromResult(task.ToReadDto());
         }
 
-        public async Task<bool> UpdateAsync(int id, TaskUpdateDto updateDto)
+        public Task<bool> UpdateAsync(int id, TaskUpdateDto updateDto)
         {
-            await Task.CompletedTask;
-            var existingTask = _taskStore.Tasks.FirstOrDefault(item => item.Id == id);
-            if (existingTask is null)
+            if (!_taskStore.Tasks.TryGetValue(id, out var existingTask))
             {
-                return false;
+                return Task.FromResult(false);
             }
 
             ApplyUpdate(existingTask, updateDto);
-            return true;
+            return Task.FromResult(true);
         }
 
-        public async Task<bool> DeleteAsync(int id)
+        public Task<bool> DeleteAsync(int id)
         {
-            await Task.CompletedTask;
-            var task = _taskStore.Tasks.FirstOrDefault(item => item.Id == id);
-            return task is not null && _taskStore.Tasks.Remove(task);
+            var result = _taskStore.Tasks.TryRemove(id, out _);
+            return Task.FromResult(result);
         }
 
         private static void ApplyUpdate(TaskItem task, TaskUpdateDto updateDto)

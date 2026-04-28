@@ -27,14 +27,5 @@ namespace TodoApi.Mappings
             };
         }
 
-        public static TaskItem ToModel(this TaskUpdateDto dto)
-        {
-            return new TaskItem
-            {
-                Title = dto.Title,
-                Description = dto.Description,
-                IsCompleted = dto.IsCompleted
-            };
-        }
     }
 }

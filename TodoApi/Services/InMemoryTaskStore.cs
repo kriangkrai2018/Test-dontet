@@ -1,9 +1,10 @@
+using System.Collections.Concurrent;
 using TodoApi.Models;
 
 namespace TodoApi.Services
 {
     public class InMemoryTaskStore : ITaskStore
     {
-        public List<TaskItem> Tasks { get; } = new();
+        public ConcurrentDictionary<int, TaskItem> Tasks { get; } = new();
     }
 }
