@@ -1,3 +1,5 @@
+using TodoApi.Dtos;
+using TodoApi.Mappings;
 using TodoApi.Models;
 
 namespace TodoApi.Services
@@ -7,51 +9,54 @@ namespace TodoApi.Services
         private readonly List<TaskItem> _tasks = new();
         private int _nextId = 1;
 
-        public async Task<IEnumerable<TaskItem>> GetAllAsync()
+        public async Task<IEnumerable<TaskReadDto>> GetAllAsync()
         {
             await Task.Yield();
-            return _tasks;
+            return _tasks.Select(task => task.ToReadDto());
         }
 
-        public async Task<TaskItem?> GetByIdAsync(int id)
+        public async Task<TaskReadDto?> GetByIdAsync(int id)
         {
             await Task.Yield();
-            return _tasks.FirstOrDefault(task => task.Id == id);
+            var task = _tasks.FirstOrDefault(item => item.Id == id);
+            return task?.ToReadDto();
         }
 
-        public async Task<TaskItem> AddAsync(TaskItem task)
+        public async Task<TaskReadDto> AddAsync(TaskCreateDto createDto)
         {
             await Task.Yield();
+            var task = createDto.ToModel();
             task.Id = _nextId++;
             task.CreatedAt = DateTime.UtcNow;
             _tasks.Add(task);
-            return task;
+            return task.ToReadDto();
         }
 
-        public async Task<bool> UpdateAsync(int id, TaskItem updatedTask)
+        public async Task<bool> UpdateAsync(int id, TaskUpdateDto updateDto)
         {
-            var existingTask = await GetByIdAsync(id);
+            await Task.Yield();
+            var existingTask = _tasks.FirstOrDefault(item => item.Id == id);
             if (existingTask is null)
             {
                 return false;
             }
 
-            existingTask.Title = updatedTask.Title;
-            existingTask.Description = updatedTask.Description;
-            existingTask.IsCompleted = updatedTask.IsCompleted;
-
+            ApplyUpdate(existingTask, updateDto);
             return true;
         }
 
         public async Task<bool> DeleteAsync(int id)
         {
-            var task = await GetByIdAsync(id);
-            if (task is null)
-            {
-                return false;
-            }
+            await Task.Yield();
+            var task = _tasks.FirstOrDefault(item => item.Id == id);
+            return task is not null && _tasks.Remove(task);
+        }
 
-            return _tasks.Remove(task);
+        private static void ApplyUpdate(TaskItem task, TaskUpdateDto updateDto)
+        {
+            task.Title = updateDto.Title;
+            task.Description = updateDto.Description;
+            task.IsCompleted = updateDto.IsCompleted;
         }
     }
 }

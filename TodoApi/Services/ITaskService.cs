@@ -1,13 +1,13 @@
-using TodoApi.Models;
+using TodoApi.Dtos;
 
 namespace TodoApi.Services
 {
     public interface ITaskService
     {
-        Task<IEnumerable<TaskItem>> GetAllAsync();
-        Task<TaskItem?> GetByIdAsync(int id);
-        Task<TaskItem> AddAsync(TaskItem task);
-        Task<bool> UpdateAsync(int id, TaskItem updatedTask);
+        Task<IEnumerable<TaskReadDto>> GetAllAsync();
+        Task<TaskReadDto?> GetByIdAsync(int id);
+        Task<TaskReadDto> AddAsync(TaskCreateDto createDto);
+        Task<bool> UpdateAsync(int id, TaskUpdateDto updateDto);
         Task<bool> DeleteAsync(int id);
     }
 }

@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
 using TodoApi.Dtos;
-using TodoApi.Mappings;
 using TodoApi.Services;
 
 namespace TodoApi.Controllers
@@ -20,37 +19,27 @@ namespace TodoApi.Controllers
         public async Task<ActionResult<IEnumerable<TaskReadDto>>> GetTasks()
         {
             var tasks = await _taskService.GetAllAsync();
-            return Ok(tasks.Select(task => task.ToReadDto()));
+            return Ok(tasks);
         }
 
         [HttpGet("{id:int}")]
         public async Task<ActionResult<TaskReadDto>> GetTask(int id)
         {
             var task = await _taskService.GetByIdAsync(id);
-            return task is null ? NotFound() : Ok(task.ToReadDto());
+            return task is null ? NotFound() : Ok(task);
         }
 
         [HttpPost]
         public async Task<ActionResult<TaskReadDto>> CreateTask([FromBody] TaskCreateDto taskDto)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            var createdTask = await _taskService.AddAsync(taskDto.ToModel());
-            return CreatedAtAction(nameof(GetTask), new { id = createdTask.Id }, createdTask.ToReadDto());
+            var createdTask = await _taskService.AddAsync(taskDto);
+            return CreatedAtAction(nameof(GetTask), new { id = createdTask.Id }, createdTask);
         }
 
         [HttpPut("{id:int}")]
         public async Task<IActionResult> UpdateTask(int id, [FromBody] TaskUpdateDto taskDto)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            if (!await _taskService.UpdateAsync(id, taskDto.ToModel()))
+            if (!await _taskService.UpdateAsync(id, taskDto))
             {
                 return NotFound();
             }
