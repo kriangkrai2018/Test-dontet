@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "dgSpecHash": "RzORxz15P+E=",
+  "success": true,
+  "projectFilePath": "/Users/kriang/Test-dontet/TodoApi/TodoApi.csproj",
+  "expectedPackageFiles": [
+    "/Users/kriang/.nuget/packages/microsoft.aspnetcore.openapi/10.0.7/microsoft.aspnetcore.openapi.10.0.7.nupkg.sha512",
+    "/Users/kriang/.nuget/packages/microsoft.openapi/2.0.0/microsoft.openapi.2.0.0.nupkg.sha512"
+  ],
+  "logs": []
+}
