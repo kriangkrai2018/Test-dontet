@@ -20,7 +20,7 @@ namespace TodoApi.Services
         public Task<IEnumerable<TaskReadDto>> GetAllAsync(CancellationToken cancellationToken = default)
         {
             cancellationToken.ThrowIfCancellationRequested();
-            _logger.LogInformation("Retrieving all tasks.");
+            _logger.LogDebug("Retrieving all tasks.");
             var tasks = _taskStore.GetAll().Select(task => task.ToReadDto());
             return Task.FromResult(tasks);
         }
@@ -28,7 +28,7 @@ namespace TodoApi.Services
         public Task<TaskReadDto?> GetByIdAsync(int id, CancellationToken cancellationToken = default)
         {
             cancellationToken.ThrowIfCancellationRequested();
-            _logger.LogInformation("Retrieving task with ID {TaskId}.", id);
+            _logger.LogDebug("Retrieving task with ID {TaskId}.", id);
             var task = _taskStore.GetById(id);
             return Task.FromResult(task?.ToReadDto());
         }
