@@ -27,6 +27,11 @@ This project is a clean Layered ASP.NET Core Web API for managing tasks, using D
 ### Async Implementation
 - All service methods return properly typed `Task<T>` using `Task.FromResult()` for non-blocking synchronous operations.
 - Avoids fake async (`await Task.CompletedTask`) which was misleading.
+- Supports `CancellationToken` on service methods and controller actions.
+
+### Logging
+- `TaskService` logs informational events for create, update, delete, and retrieval operations.
+- It also logs warnings for missing tasks and errors when create fails.
 
 ## Endpoints
 
