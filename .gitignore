@@ -1,0 +1,17 @@
+# .NET build artifacts
+bin/
+obj/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Visual Studio Code
+direnv/
+.vscode/
+
+# Rider
+.idea/
+
+# OS files
+.DS_Store
