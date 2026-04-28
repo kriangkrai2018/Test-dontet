@@ -39,26 +39,26 @@ namespace TodoApi.Services
 
         public Task<bool> UpdateAsync(int id, TaskUpdateDto updateDto)
         {
-            if (!_taskStore.Tasks.TryGetValue(id, out var existingTask))
-            {
-                return Task.FromResult(false);
-            }
+            var success = false;
+            _taskStore.Tasks.AddOrUpdate(
+                id,
+                new TaskItem(),
+                (key, existingTask) =>
+                {
+                    success = true;
+                    existingTask.Title = updateDto.Title;
+                    existingTask.Description = updateDto.Description;
+                    existingTask.IsCompleted = updateDto.IsCompleted;
+                    return existingTask;
+                });
 
-            ApplyUpdate(existingTask, updateDto);
-            return Task.FromResult(true);
+            return Task.FromResult(success);
         }
 
         public Task<bool> DeleteAsync(int id)
         {
             var result = _taskStore.Tasks.TryRemove(id, out _);
             return Task.FromResult(result);
-        }
-
-        private static void ApplyUpdate(TaskItem task, TaskUpdateDto updateDto)
-        {
-            task.Title = updateDto.Title;
-            task.Description = updateDto.Description;
-            task.IsCompleted = updateDto.IsCompleted;
         }
     }
 }

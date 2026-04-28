@@ -16,14 +16,14 @@ namespace TodoApi.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<TaskReadDto>>> GetTasks()
+        public async Task<ActionResult<IEnumerable<TaskReadDto>>> GetAll()
         {
             var tasks = await _taskService.GetAllAsync();
             return Ok(tasks);
         }
 
         [HttpGet("{id:int}")]
-        public async Task<ActionResult<TaskReadDto>> GetTask(int id)
+        public async Task<ActionResult<TaskReadDto>> GetById(int id)
         {
             var task = await _taskService.GetByIdAsync(id);
             return task is null ? NotFound() : Ok(task);
@@ -33,7 +33,7 @@ namespace TodoApi.Controllers
         public async Task<ActionResult<TaskReadDto>> CreateTask([FromBody] TaskCreateDto taskDto)
         {
             var createdTask = await _taskService.AddAsync(taskDto);
-            return CreatedAtAction(nameof(GetTask), new { id = createdTask.Id }, createdTask);
+            return CreatedAtAction(nameof(GetById), new { id = createdTask.Id }, createdTask);
         }
 
         [HttpPut("{id:int}")]
