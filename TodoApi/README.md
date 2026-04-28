@@ -9,7 +9,7 @@ This project is a clean Layered ASP.NET Core Web API for managing tasks, using D
 - `DTOs`: separate request and response payloads from domain models.
 - `Validators`: FluentValidation rules ensure request DTOs are valid before controller actions execute.
 - `Middleware`: centralized exception handling returns standardized ProblemDetails responses.
-- `Dependency Injection`: `TaskService` is registered as `Scoped`, and the in-memory `TaskStore` is registered as `Singleton` to preserve shared data across requests.
+- `Dependency Injection`: `TaskService` and the in-memory `TaskStore` are both registered as `Singleton` for shared in-memory state and stable ID generation.
 
 ## Production-Ready Implementation
 
@@ -54,12 +54,13 @@ This project is a clean Layered ASP.NET Core Web API for managing tasks, using D
 
 ## Dependency Injection
 
-- `AddScoped<ITaskService, TaskService>()`
+- `AddSingleton<ITaskService, TaskService>()`
 - `AddSingleton<ITaskStore, InMemoryTaskStore>()`
 
 This means:
-- each request gets its own `TaskService` instance
-- the shared in-memory task store is preserved across requests with thread-safe operations
+- `TaskService` is reused across requests and has no per-request state
+- `InMemoryTaskStore` is shared globally and owns ID generation and concurrency control
+- This design keeps the singleton store implementation hidden and replaceable in the future
 
 ## Development
 
