@@ -1,9 +1,12 @@
 {
   "version": 2,
-  "dgSpecHash": "RzORxz15P+E=",
+  "dgSpecHash": "Hx8KkeFbwds=",
   "success": true,
   "projectFilePath": "/Users/kriang/Test-dontet/TodoApi/TodoApi.csproj",
   "expectedPackageFiles": [
+    "/Users/kriang/.nuget/packages/fluentvalidation/11.11.0/fluentvalidation.11.11.0.nupkg.sha512",
+    "/Users/kriang/.nuget/packages/fluentvalidation.aspnetcore/11.3.1/fluentvalidation.aspnetcore.11.3.1.nupkg.sha512",
+    "/Users/kriang/.nuget/packages/fluentvalidation.dependencyinjectionextensions/11.11.0/fluentvalidation.dependencyinjectionextensions.11.11.0.nupkg.sha512",
     "/Users/kriang/.nuget/packages/microsoft.aspnetcore.openapi/10.0.7/microsoft.aspnetcore.openapi.10.0.7.nupkg.sha512",
     "/Users/kriang/.nuget/packages/microsoft.openapi/2.0.0/microsoft.openapi.2.0.0.nupkg.sha512"
   ],

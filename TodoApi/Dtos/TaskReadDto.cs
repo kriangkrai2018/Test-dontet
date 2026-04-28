@@ -1,6 +1,6 @@
-namespace TodoApi.Models
+namespace TodoApi.Dtos
 {
-    public class TaskItem
+    public class TaskReadDto
     {
         public int Id { get; set; }
         public string Title { get; set; } = string.Empty;
