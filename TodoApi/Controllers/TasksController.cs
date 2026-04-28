@@ -30,14 +30,14 @@ namespace TodoApi.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<TaskReadDto>> CreateTask([FromBody] TaskCreateDto taskDto)
+        public async Task<ActionResult<TaskReadDto>> Create([FromBody] TaskCreateDto taskDto)
         {
             var createdTask = await _taskService.AddAsync(taskDto);
             return CreatedAtAction(nameof(GetById), new { id = createdTask.Id }, createdTask);
         }
 
         [HttpPut("{id:int}")]
-        public async Task<IActionResult> UpdateTask(int id, [FromBody] TaskUpdateDto taskDto)
+        public async Task<IActionResult> Update(int id, [FromBody] TaskUpdateDto taskDto)
         {
             if (!await _taskService.UpdateAsync(id, taskDto))
             {
@@ -48,7 +48,7 @@ namespace TodoApi.Controllers
         }
 
         [HttpDelete("{id:int}")]
-        public async Task<IActionResult> DeleteTask(int id)
+        public async Task<IActionResult> Delete(int id)
         {
             if (!await _taskService.DeleteAsync(id))
             {

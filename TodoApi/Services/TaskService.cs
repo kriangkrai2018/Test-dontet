@@ -17,7 +17,7 @@ namespace TodoApi.Services
 
         public Task<IEnumerable<TaskReadDto>> GetAllAsync()
         {
-            var tasks = _taskStore.Tasks.Values.Select(task => task.ToReadDto()).AsEnumerable();
+            var tasks = _taskStore.Tasks.Values.Select(task => task.ToReadDto());
             return Task.FromResult(tasks);
         }
 
@@ -39,20 +39,22 @@ namespace TodoApi.Services
 
         public Task<bool> UpdateAsync(int id, TaskUpdateDto updateDto)
         {
-            var success = false;
-            _taskStore.Tasks.AddOrUpdate(
-                id,
-                new TaskItem(),
-                (key, existingTask) =>
-                {
-                    success = true;
-                    existingTask.Title = updateDto.Title;
-                    existingTask.Description = updateDto.Description;
-                    existingTask.IsCompleted = updateDto.IsCompleted;
-                    return existingTask;
-                });
+            if (!_taskStore.Tasks.TryGetValue(id, out var existingTask))
+            {
+                return Task.FromResult(false);
+            }
 
-            return Task.FromResult(success);
+            var updatedTask = new TaskItem
+            {
+                Id = existingTask.Id,
+                Title = updateDto.Title,
+                Description = updateDto.Description,
+                IsCompleted = updateDto.IsCompleted,
+                CreatedAt = existingTask.CreatedAt
+            };
+
+            var updated = _taskStore.Tasks.TryUpdate(id, updatedTask, existingTask);
+            return Task.FromResult(updated);
         }
 
         public Task<bool> DeleteAsync(int id)
