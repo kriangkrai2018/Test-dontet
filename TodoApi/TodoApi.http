@@ -4,4 +4,3 @@ GET {{TodoApi_HostAddress}}/weatherforecast/
 Accept: application/json
 
 ###
- 
