@@ -1,4 +1,3 @@
-using System.Collections.Concurrent;
 using TodoApi.Dtos;
 using TodoApi.Mappings;
 using TodoApi.Models;
@@ -8,7 +7,6 @@ namespace TodoApi.Services
     public class TaskService : ITaskService
     {
         private readonly ITaskStore _taskStore;
-        private int _nextId = 1;
 
         public TaskService(ITaskStore taskStore)
         {
@@ -17,29 +15,29 @@ namespace TodoApi.Services
 
         public Task<IEnumerable<TaskReadDto>> GetAllAsync()
         {
-            var tasks = _taskStore.Tasks.Values.Select(task => task.ToReadDto());
+            var tasks = _taskStore.GetAll().Select(task => task.ToReadDto());
             return Task.FromResult(tasks);
         }
 
         public Task<TaskReadDto?> GetByIdAsync(int id)
         {
-            _taskStore.Tasks.TryGetValue(id, out var task);
-            var result = task?.ToReadDto();
-            return Task.FromResult(result);
+            var task = _taskStore.GetById(id);
+            return Task.FromResult(task?.ToReadDto());
         }
 
         public Task<TaskReadDto> AddAsync(TaskCreateDto createDto)
         {
             var task = createDto.ToModel();
-            task.Id = Interlocked.Increment(ref _nextId);
+            task.Id = _taskStore.NextId();
             task.CreatedAt = DateTime.UtcNow;
-            _taskStore.Tasks.TryAdd(task.Id, task);
+            _taskStore.TryAdd(task);
             return Task.FromResult(task.ToReadDto());
         }
 
         public Task<bool> UpdateAsync(int id, TaskUpdateDto updateDto)
         {
-            if (!_taskStore.Tasks.TryGetValue(id, out var existingTask))
+            var existingTask = _taskStore.GetById(id);
+            if (existingTask is null)
             {
                 return Task.FromResult(false);
             }
@@ -53,13 +51,13 @@ namespace TodoApi.Services
                 CreatedAt = existingTask.CreatedAt
             };
 
-            var updated = _taskStore.Tasks.TryUpdate(id, updatedTask, existingTask);
+            var updated = _taskStore.TryUpdate(updatedTask);
             return Task.FromResult(updated);
         }
 
         public Task<bool> DeleteAsync(int id)
         {
-            var result = _taskStore.Tasks.TryRemove(id, out _);
+            var result = _taskStore.TryRemove(id);
             return Task.FromResult(result);
         }
     }

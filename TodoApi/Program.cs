@@ -25,7 +25,7 @@ builder.Services.AddControllers()
 builder.Services.AddOpenApi();
 builder.Services.AddValidatorsFromAssemblyContaining<TodoApi.Validators.TaskCreateDtoValidator>();
 builder.Services.AddFluentValidationAutoValidation();
-builder.Services.AddScoped<ITaskService, TaskService>();
+builder.Services.AddSingleton<ITaskService, TaskService>();
 builder.Services.AddSingleton<ITaskStore, InMemoryTaskStore>();
 
 var app = builder.Build();
