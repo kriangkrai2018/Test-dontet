@@ -16,30 +16,30 @@ namespace TodoApi.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<TaskReadDto>>> GetAll()
+        public async Task<ActionResult<IEnumerable<TaskReadDto>>> GetAll(CancellationToken cancellationToken)
         {
-            var tasks = await _taskService.GetAllAsync();
+            var tasks = await _taskService.GetAllAsync(cancellationToken);
             return Ok(tasks);
         }
 
         [HttpGet("{id:int}")]
-        public async Task<ActionResult<TaskReadDto>> GetById(int id)
+        public async Task<ActionResult<TaskReadDto>> GetById(int id, CancellationToken cancellationToken)
         {
-            var task = await _taskService.GetByIdAsync(id);
+            var task = await _taskService.GetByIdAsync(id, cancellationToken);
             return task is null ? NotFound() : Ok(task);
         }
 
         [HttpPost]
-        public async Task<ActionResult<TaskReadDto>> Create([FromBody] TaskCreateDto taskDto)
+        public async Task<ActionResult<TaskReadDto>> Create([FromBody] TaskCreateDto taskDto, CancellationToken cancellationToken)
         {
-            var createdTask = await _taskService.AddAsync(taskDto);
+            var createdTask = await _taskService.AddAsync(taskDto, cancellationToken);
             return CreatedAtAction(nameof(GetById), new { id = createdTask.Id }, createdTask);
         }
 
         [HttpPut("{id:int}")]
-        public async Task<IActionResult> Update(int id, [FromBody] TaskUpdateDto taskDto)
+        public async Task<IActionResult> Update(int id, [FromBody] TaskUpdateDto taskDto, CancellationToken cancellationToken)
         {
-            if (!await _taskService.UpdateAsync(id, taskDto))
+            if (!await _taskService.UpdateAsync(id, taskDto, cancellationToken))
             {
                 return NotFound();
             }
@@ -48,9 +48,9 @@ namespace TodoApi.Controllers
         }
 
         [HttpDelete("{id:int}")]
-        public async Task<IActionResult> Delete(int id)
+        public async Task<IActionResult> Delete(int id, CancellationToken cancellationToken)
         {
-            if (!await _taskService.DeleteAsync(id))
+            if (!await _taskService.DeleteAsync(id, cancellationToken))
             {
                 return NotFound();
             }
