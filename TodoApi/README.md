@@ -79,6 +79,11 @@ This means:
    dotnet run
    ```
 
+4. Test:
+   ```bash
+   dotnet test TodoApi.Tests/TodoApi.Tests.csproj
+   ```
+
 ## Notes
 
 - `TaskService` sets `CreatedAt` with `DateTime.UtcNow` when new tasks are created.
