@@ -1,4 +1,3 @@
-using System.Threading;
 using Microsoft.Extensions.Logging;
 using TodoApi.Dtos;
 using TodoApi.Mappings;

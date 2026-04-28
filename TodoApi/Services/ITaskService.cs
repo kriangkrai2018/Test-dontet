@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-using System.Threading;
 using TodoApi.Dtos;
 
 namespace TodoApi.Services
